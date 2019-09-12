@@ -1,0 +1,1 @@
+rsync -avzh --exclude=.git ./ picam0:~/work/pi-camera-caputre-server
