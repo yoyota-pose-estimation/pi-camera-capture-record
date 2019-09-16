@@ -1,15 +1,18 @@
+import io
 import os
+import sys
 import socket
 import datetime
+from time import sleep
 from picamera import PiCamera
 from minio import Minio
 from minio.error import ResponseError
 
-picture_dir = '/home/pi/Pictures'
 
 cam = PiCamera()
 cam.rotation = 180
 cam.resolution = (300, 300)
+
 
 minioClient = Minio(
     os.environ.get('S3_ENDPOINT'),
@@ -18,18 +21,20 @@ minioClient = Minio(
     secure=True)
 
 
-def upload(object_name, file_path):
-    minioClient.fput_object(
+def upload(object_name, file_obj):
+    length = file_obj.getbuffer().nbytes
+    minioClient.put_object(
         'pi-camera',
         object_name,
-        file_path)
-    os.remove(file_path)
+        file_obj,
+        length)
 
 
 def capture(section):
     filename = str(datetime.datetime.utcnow()) + \
         socket.gethostname() + '.jpg'
-    save_path = os.path.join(picture_dir, filename)
-    cam.capture(save_path)
+    stream = io.BytesIO()
+    cam.capture(stream, 'jpeg')
+    stream.seek(0)
     object_name = os.path.join(section, filename)
-    upload(object_name, save_path)
+    upload(object_name, stream)
