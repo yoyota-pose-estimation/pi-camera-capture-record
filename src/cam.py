@@ -1,4 +1,5 @@
 import os
+import socket
 import datetime
 from picamera import PiCamera
 from minio import Minio
@@ -26,8 +27,9 @@ def upload(object_name, file_path):
 
 
 def capture(section):
-    today = str(datetime.datetime.utcnow()) + '.jpg'
-    save_path = os.path.join(picture_dir, today)
+    filename = str(datetime.datetime.utcnow()) + \
+        socket.gethostname() + '.jpg'
+    save_path = os.path.join(picture_dir, filename)
     cam.capture(save_path)
-    object_name = os.path.join(section, today)
+    object_name = os.path.join(section, filename)
     upload(object_name, save_path)

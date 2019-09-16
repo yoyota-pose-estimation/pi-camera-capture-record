@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 
 @app.route("/<section>")
-def section(section):
+def section_fn(section):
     capture(section)
     return 'ok'
 
