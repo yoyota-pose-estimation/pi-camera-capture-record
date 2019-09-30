@@ -1,4 +1,6 @@
-for index in {0..2}
+for index in 3 
 do
-    rsync -avzh --exclude=.git ./ picam$index:~/work/pi-camera-caputre-server
+    rsync -avzh --exclude=.git ./ picam$index:~/work/pi-camera-capture-server
 done
+
+# {0..2}
