@@ -44,12 +44,12 @@ def capture():
 
 def get_object_name():
     now = datetime.datetime.utcnow()
-    filename = "{}-{}.jpg".format(now.isoformat(), socket.gethostname())
+    filename = "{}_{}.jpg".format(now.isoformat(), socket.gethostname())
     object_name = os.path.join(
         "record",
         now.strftime("%Y-%m-%d"),
-        str(now.hour),
-        str(now.minute),
+        now.strftime("%H"),
+        now.strftime("%M"),
         filename,
     )
     return object_name
