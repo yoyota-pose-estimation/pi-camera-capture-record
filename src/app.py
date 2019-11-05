@@ -16,19 +16,16 @@ sleep(2)
 
 
 minioClient = Minio(
-    os.environ.get('S3_ENDPOINT'),
-    access_key=os.environ.get('AWS_ACCESS_KEY_ID'),
-    secret_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
-    secure=True)
+    os.environ.get("S3_ENDPOINT"),
+    access_key=os.environ.get("AWS_ACCESS_KEY_ID"),
+    secret_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
+    secure=True,
+)
 
 
 def upload(object_name, stream):
     length = stream.getbuffer().nbytes
-    minioClient.put_object(
-        'pi-camera',
-        object_name,
-        stream,
-        length)
+    minioClient.put_object("pi-camera", object_name, stream, length)
 
 
 def copy_stream(stream):
@@ -40,25 +37,36 @@ def copy_stream(stream):
 
 def capture():
     stream = io.BytesIO()
-    cam.capture(stream, 'jpeg', True)
+    cam.capture(stream, "jpeg", True)
     stream.seek(0)
     return stream
 
 
 def get_object_name():
     now = datetime.datetime.utcnow()
-    filename = '{}-{}.jpg'.format(now.isoformat(), socket.gethostname())
+    filename = "{}-{}.jpg".format(now.isoformat(), socket.gethostname())
     object_name = os.path.join(
-        'record', now.strftime('%y-%m-%d'), now.strftime('%H-%M'), filename)
+        "record",
+        now.strftime("%Y-%m-%d"),
+        str(now.hour),
+        str(now.minute),
+        filename,
+    )
     return object_name
 
 
 def main():
     while True:
-        object_name = get_object_name()
-        stream = capture()
-        Thread(target=upload, args=(object_name, copy_stream(stream))).start()
-        sleep(0.03)
+        sleep(0.1)
+        try:
+            object_name = get_object_name()
+            stream = capture()
+            Thread(
+                target=upload, args=(object_name, copy_stream(stream))
+            ).start()
+        except Exception as e:
+            print(e)
+            sleep(0.1)
 
 
 if __name__ == "__main__":
