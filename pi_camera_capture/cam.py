@@ -1,5 +1,4 @@
 import io
-from shutil import copyfileobj
 from picamera import PiCamera
 
 cam = PiCamera()
