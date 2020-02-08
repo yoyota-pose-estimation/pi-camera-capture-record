@@ -1,13 +1,13 @@
 import io
-from picamera import PiCamera
+from picamera import PiCamera  # pylint: disable=import-error
 
-cam = PiCamera()
-cam.rotation = 180
-cam.resolution = (300, 300)
+CAM = PiCamera()
+CAM.rotation = 180
+CAM.resolution = (300, 300)
 
 
 def capture():
     stream = io.BytesIO()
-    cam.capture(stream, "jpeg", True)
+    CAM.capture(stream, "jpeg", True)
     stream.seek(0)
     return stream
