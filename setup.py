@@ -1,9 +1,16 @@
 from setuptools import setup, find_packages
 
-required_packages = ["pillow", "pylint", "pytest", "requests"]
+DEPENDENCIES = ["fire", "requests"]
+TEST_DEPENDENCIES = ["pillow", "pylint", "pytest", "responses"]
 
 setup(
-    name="pi_camera_capture",
-    install_requires=required_packages,
+    name="pi-camera-capture",
+    version="0.1.0",
     packages=find_packages(),
+    entry_points={
+        "console_scripts": ["pi-camera-capture=pi_camera_capture.cli:cli"]
+    },
+    install_requires=DEPENDENCIES,
+    test_require=TEST_DEPENDENCIES,
+    extras_require={"test": TEST_DEPENDENCIES},
 )
