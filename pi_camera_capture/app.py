@@ -8,7 +8,7 @@ HOSTNAME = socket.gethostname()
 
 
 def query_distance(url):
-    return requests.get(url).json().get("distance", None)
+    return requests.get(url).json()
 
 
 def upload_image(url, image):
@@ -18,9 +18,11 @@ def upload_image(url, image):
 def upload_image_if_distance_exist(distance_server_url, upload_server_url):
     now = int(time() * 10 ** 9)
     image = capture()
-    distance = query_distance("{}/?time={}".format(distance_server_url, now))
-    if distance:
-        image.name = "{}_{}.jpg".format(HOSTNAME, distance)
+    result = query_distance("{}/?time={}".format(distance_server_url, now))
+    if result:
+        image.name = "{}_{}_{}_{}.jpg".format(
+            result["time"], now, HOSTNAME, result["distance"]
+        )
         upload_image(upload_server_url, image)
 
 
