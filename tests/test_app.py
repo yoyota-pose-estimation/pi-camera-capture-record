@@ -1,4 +1,3 @@
-import io
 import re
 import socket
 from time import time
