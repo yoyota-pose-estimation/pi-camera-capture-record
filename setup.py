@@ -13,7 +13,7 @@ def get_long_description():
 
 setup(
     name="pi-camera-capture",
-    version="0.1.1",
+    version="0.1.2",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
     packages=find_packages(exclude=("tests",)),
