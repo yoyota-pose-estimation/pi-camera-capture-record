@@ -66,14 +66,13 @@ def test_upload_image_if_distance_exist():
     upload_image_if_distance_exist(DISTANCE_SERVER_URL, UPLOAD_SERVER_URL)
     assert len(responses.calls) == 3
     msg = email.parser.BytesParser().parsebytes(responses.calls[2].request.body)
-    filename = re.search('filename="(.*)"', msg.as_string()).group(1)
-    matched = re.match(
+    pattern = (
         str(TIME)
         + r"_\d{19}_"
         + socket.gethostname()
         + "_"
         + str(RESP_DISTANCE)
-        + ".jpg",
-        filename,
+        + ".jpg"
     )
+    matched = re.search(pattern, msg.as_string())
     assert matched is not None
