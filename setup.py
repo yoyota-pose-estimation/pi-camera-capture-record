@@ -2,7 +2,7 @@ from os import path
 from setuptools import setup, find_packages
 
 DEPENDENCIES = ["fire", "requests"]
-TEST_DEPENDENCIES = ["pillow", "pylint", "pytest", "responses"]
+TEST_DEPENDENCIES = ["pillow", "pylint", "pytest", "pytest-mock", "responses"]
 
 
 def get_long_description():
