@@ -1,6 +1,6 @@
 import re
 import socket
-from time import time
+import time
 import email.parser
 
 
@@ -17,7 +17,7 @@ from pi_camera_capture.app import (
 UPLOAD_SERVER_URL = "http://localhost:8080/test/upload_image"
 DISTANCE_SERVER_URL = "http://localhost"
 RESP_DISTANCE = 0.1212321
-TIME = int(time() * 10 ** 9)
+TIME = int(time.time() * 10 ** 9)
 
 
 def add_upload_server_responses():
@@ -47,7 +47,7 @@ def add_distance_server_responses():
 def test_query_distance():
     add_distance_server_responses()
 
-    now = int(time() * 10 ** 9)
+    now = int(time.time() * 10 ** 9)
     url = "{}/?time={}".format(DISTANCE_SERVER_URL, now)
     result = query_distance(url)
     assert bool(result) is False
@@ -58,13 +58,19 @@ def test_query_distance():
 
 
 @responses.activate
-def test_upload_image_if_distance_exist():
+def test_upload_image_if_distance_exist(mocker):
+    mocker.patch("time.sleep")
+
     add_distance_server_responses()
     add_upload_server_responses()
-    upload_image_if_distance_exist(DISTANCE_SERVER_URL, UPLOAD_SERVER_URL)
+    upload_image_if_distance_exist(DISTANCE_SERVER_URL, UPLOAD_SERVER_URL, 0.05)
     assert len(responses.calls) == 1
+    time.sleep.assert_called_with(0.05)  # pylint: disable=no-member
+
     upload_image_if_distance_exist(DISTANCE_SERVER_URL, UPLOAD_SERVER_URL)
     assert len(responses.calls) == 3
+    time.sleep.assert_called_with(0.01)  # pylint: disable=no-member
+
     msg = email.parser.BytesParser().parsebytes(responses.calls[2].request.body)
     pattern = (
         str(TIME)
